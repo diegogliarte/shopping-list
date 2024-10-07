@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping List</title>
+    <link href="https://fonts.googleapis.com/css?family=Schoolbell&v1" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">  <!-- Linking external CSS -->
+</head>
+<body>
+<h1>Shopping List</h1>
+<ul id="shopping-list">
+    {% for item in items %}
+    <li data-id="{{ item.id }}">
+        <button class="remove-item">X</button>
+        <input class="edit-item" type="text" value="{{ item.name }}" data-id="{{ item.id }}"/>
+    </li>
+    {% endfor %}
+</ul>
+
+<form id="add-item-form">
+    <input type="text" id="item-name" name="item_name" placeholder="Add item" required>
+    <button type="submit">Add Item</button>
+</form>
+
+<ul id="connected-users" class="connected-users-bubbles">
+    {% for user in users %}
+    <li>{{ user.username|first|upper }}</li>
+    {% endfor %}
+</ul>
+
+<script>
+    const ws = new WebSocket('ws://localhost:8000/ws');
+
+    ws.onmessage = function (event) {
+        try {
+            const data = JSON.parse(event.data);
+
+            if (data.action === "add_item") {
+                const shoppingList = document.getElementById('shopping-list');
+                const li = document.createElement('li');
+                li.dataset.id = data.item_id;
+
+                li.innerHTML = `
+                    <button class="remove-item">X</button>
+                    <input class="edit-item" type="text" value="${data.item_name}" data-id="${data.item_id}" />
+                `;
+                shoppingList.appendChild(li);
+                addRemoveItemEvent(li.querySelector('.remove-item'));
+                addEditItemEvent(li.querySelector('.edit-item'));
+            } else if (data.action === "remove_item") {
+                const shoppingList = document.getElementById('shopping-list');
+                const li = document.querySelector(`li[data-id="${data.item_id}"]`);
+                if (li) {
+                    shoppingList.removeChild(li);
+                }
+            } else if (data.action === "edit_item") {
+                const li = document.querySelector(`li[data-id="${data.item_id}"]`);
+                if (li) {
+                    const input = li.querySelector('.edit-item');
+                    input.value = data.new_name;
+                }
+            }
+
+
+            if (data.users) {
+                const usersList = document.getElementById('connected-users');
+                usersList.innerHTML = '';
+                data.users.forEach(user => {
+                    const bubble = document.createElement('li');
+                    bubble.textContent = user.charAt(0).toUpperCase();
+                    usersList.appendChild(bubble);
+                });
+            }
+
+        } catch (error) {
+            console.error("Error parsing message from WebSocket:", error);
+        }
+    }
+
+    ws.onclose = function (event) {
+        console.error('WebSocket closed:', event);
+    }
+
+    ws.onerror = function (error) {
+        console.error('WebSocket error:', error);
+    }
+
+    document.getElementById('add-item-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const itemName = document.getElementById('item-name').value;
+        ws.send(JSON.stringify({
+            action: 'add_item',
+            item_name: itemName
+        }));
+        document.getElementById('item-name').value = '';
+    });
+
+    function addRemoveItemEvent(button) {
+        button.addEventListener('click', function () {
+            const li = button.parentElement;
+            const itemId = li.getAttribute('data-id');
+            ws.send(JSON.stringify({
+                action: 'remove_item',
+                item_id: itemId
+            }));
+            li.remove();
+        });
+    }
+
+    document.querySelectorAll('.remove-item').forEach(button => addRemoveItemEvent(button));
+
+    function addEditItemEvent(input) {
+        input.addEventListener('change', function () {
+            const itemId = input.getAttribute('data-id');
+            const newName = input.value;
+            console.log('Edit item:', itemId, newName)
+            ws.send(JSON.stringify({
+                action: 'edit_item',
+                item_id: itemId,
+                new_name: newName
+            }));
+        });
+    }
+
+    document.querySelectorAll('.edit-item').forEach(input => addEditItemEvent(input));
+</script>
+</body>
+</html>

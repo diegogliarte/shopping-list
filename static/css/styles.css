@@ -1,0 +1,126 @@
+body {
+    font-family: 'Schoolbell', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 20px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+h1, h2 {
+    color: #333;
+    align-content: center;
+    text-align: center;
+}
+
+form {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+#add-item-form {
+    background-color: transparent;
+    box-shadow: none;
+    display: flex;
+    padding: 0;
+    max-width: 100%;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 18px;
+    font-family: 'Schoolbell', sans-serif;
+    background-color: transparent;
+}
+
+#shopping-list input[type="text"] {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+button {
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: 'Schoolbell', sans-serif;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+#shopping-list {
+    width: 100%;
+    margin: 0 auto;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+}
+
+li span {
+    flex-grow: 1;
+    font-family: 'Schoolbell', sans-serif;
+}
+
+li button.remove-item {
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #333;
+    background: none;
+    font-family: 'Schoolbell', sans-serif;
+}
+
+li button.remove-item:hover {
+    color: #000;
+}
+
+.connected-users-bubbles {
+    display: flex;
+    justify-content: flex-end;
+    list-style-type: none;
+    padding: 0;
+}
+
+.connected-users-bubbles li {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #333;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+    font-size: 1rem;
+    font-family: 'Schoolbell', sans-serif;  /* Ensure same font */
+}
