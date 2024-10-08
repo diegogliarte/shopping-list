@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   shopping-list:
     build: .
