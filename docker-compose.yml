@@ -1,11 +1,10 @@
-version: '3'
-
 services:
   shopping-list:
     build: .
     container_name: shopping-list
+    restart: always
     ports:
-      - "8001:8000"
+      - "${APP_PORT}:8000"
     volumes:
       - .:/app
     env_file:
