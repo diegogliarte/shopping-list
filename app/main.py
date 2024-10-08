@@ -24,7 +24,7 @@ PASSWORD = os.getenv("PASSWORD", "test_password")
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(root_path="/shopping")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
@@ -47,7 +47,7 @@ async def login_page(request: Request):
             payload = decode_access_token(token)
             username = payload.get("sub")
             if username:
-                return RedirectResponse(url="/shopping-list")
+                return RedirectResponse(url="/shopping/list")
         except JWTError:
             pass
 
@@ -63,7 +63,7 @@ async def login(username: str = Form(...), password: str = Form(...)):
     access_token_expires = timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)
     access_token = create_access_token(data={"sub": username}, expires_delta=access_token_expires)
 
-    response = RedirectResponse(url="/shopping-list", status_code=303)
+    response = RedirectResponse(url="/shopping/list", status_code=303)
     response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="Strict")
     return response
 
@@ -83,7 +83,7 @@ async def get_current_user(request: Request):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
 
-@app.get("/shopping-list", response_class=HTMLResponse)
+@app.get("/list", response_class=HTMLResponse)
 async def shopping_list(request: Request, username: str = Depends(get_current_user)):
     db = next(get_db())
     items = get_items(db)
@@ -100,13 +100,14 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket.close(code=1008)
         return
 
+    decode_access_token(cookie_header)
+
     try:
         payload = decode_access_token(cookie_header)
         username = payload.get("sub")
         if username is None:
             await websocket.close(code=1008)
             return
-
         await manager.connect(websocket, username)
         await manager.broadcast_users()
 
@@ -144,7 +145,7 @@ async def websocket_endpoint(websocket: WebSocket):
             db.close()
 
     except JWTError:
-        await websocket.close(code=1008)  # 1008: Policy violation (invalid credentials)
+        await websocket.close(code=1008)
     except WebSocketDisconnect:
         manager.disconnect(websocket)
         await manager.broadcast_users()

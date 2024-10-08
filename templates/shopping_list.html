@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping List</title>
     <link href="https://fonts.googleapis.com/css?family=Schoolbell&v1" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/styles.css">  <!-- Linking external CSS -->
+    <link rel="stylesheet" href="/shopping/static/css/styles.css">  <!-- Linking external CSS -->
 </head>
 <body>
 <h1>Shopping List</h1>
@@ -30,7 +30,7 @@
 </ul>
 
 <script>
-    const ws = new WebSocket('ws://localhost:8000/ws');
+    const ws = new WebSocket('ws://localhost:8001/shopping/ws');
 
     ws.onmessage = function (event) {
         try {
