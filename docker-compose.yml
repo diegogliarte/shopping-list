@@ -4,6 +4,7 @@ services:
   shopping-list:
     build: .
     container_name: shopping-list
+    restart: always
     ports:
       - "8000:8000"
     volumes:
