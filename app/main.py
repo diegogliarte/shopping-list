@@ -1,8 +1,7 @@
 import os
-
-from dotenv import load_dotenv
 from datetime import timedelta
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, Depends, Request, Form, WebSocket, WebSocketDisconnect, HTTPException, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.security import OAuth2PasswordBearer
@@ -16,11 +15,9 @@ from .database import get_db, engine
 from .models import Base
 from .security import create_access_token, decode_access_token, ACCESS_TOKEN_EXPIRE_DAYS
 
-
 load_dotenv()
 
 PASSWORD = os.getenv("PASSWORD")
-
 
 Base.metadata.create_all(bind=engine)
 
