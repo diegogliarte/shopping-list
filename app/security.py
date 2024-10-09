@@ -2,7 +2,8 @@ import os
 from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
-from fastapi import HTTPException, status
+from fastapi import status
+from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -30,4 +31,4 @@ def decode_access_token(token: str):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
     except JWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+        raise RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)

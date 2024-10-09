@@ -30,7 +30,7 @@
 </ul>
 
 <script>
-    const ws = new WebSocket('ws://localhost:8001/shopping/ws');
+    const ws = new WebSocket('wss://' + location.host + '/shopping/ws');
 
     ws.onmessage = function (event) {
         try {

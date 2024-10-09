@@ -19,18 +19,17 @@ from .security import create_access_token, decode_access_token, ACCESS_TOKEN_EXP
 
 load_dotenv()
 
-PASSWORD = os.getenv("PASSWORD", "test_password")
+PASSWORD = os.getenv("PASSWORD")
 
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(root_path="/shopping")
+app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 manager = ConnectionManager()
 
-# JWT OAuth2 scheme (no need for form, as we are handling via our forms and cookies)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
