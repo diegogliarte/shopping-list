@@ -6,6 +6,6 @@ services:
     ports:
       - "${APP_PORT}:8000"
     volumes:
-      - ./static:/app/static
+      - .:/app
     env_file:
       - .env
