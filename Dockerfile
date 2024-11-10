@@ -13,4 +13,4 @@ COPY app/ ./app/
 COPY static/ ./static/
 COPY templates/ ./templates/
 
-CMD ["gunicorn", "app.main:app", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:${PORT:-8000}", "--workers", "${WORKERS:-4}"]
+CMD ["gunicorn", "app.main:app", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "--workers", "4"]
