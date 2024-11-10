@@ -17,8 +17,6 @@ from .security import create_access_token, decode_access_token, ACCESS_TOKEN_EXP
 
 load_dotenv()
 
-PASSWORD = os.getenv("PASSWORD")
-
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -28,10 +26,6 @@ templates = Jinja2Templates(directory="templates")
 manager = ConnectionManager()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-
-def authenticate_user(password: str):
-    return password == PASSWORD
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -51,9 +45,7 @@ async def login_page(request: Request):
 
 
 @app.post("/login")
-async def login(username: str = Form(...), password: str = Form(...)):
-    if not authenticate_user(password):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+async def login(username: str = Form(...)):
 
     # Generate JWT token and return as an HttpOnly cookie
     access_token_expires = timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)
